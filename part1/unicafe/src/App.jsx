@@ -3,18 +3,45 @@ import Button from './Button';
 import Statistics from './Statistics';
 
 function App() {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const [points, setPoints] = useState([
+    { name: 'good', value: 0 },
+    { name: 'neutral', value: 0 },
+    { name: 'bad', value: 0 },
+  ]);
+
+  const addGood = () => {
+    const newPoints = points.map((point) =>
+      point.name === 'good' ? { ...point, value: point.value + 1 } : point
+    );
+    setPoints(newPoints);
+  };
+
+  const addNeutral = () => {
+    const newPoints = points.map((point) =>
+      point.name === 'neutral' ? { ...point, value: point.value + 1 } : point
+    );
+    setPoints(newPoints);
+  };
+
+  const addBad = () => {
+    const newPoints = points.map((point) =>
+      point.name === 'bad' ? { ...point, value: point.value + 1 } : point
+    );
+    setPoints(newPoints);
+  };
 
   return (
     <>
       <h2>give feedback</h2>
-      <Button onSubmit={() => setGood(good + 1)}>good</Button>
-      <Button onSubmit={() => setNeutral(neutral + 1)}>neutral</Button>
-      <Button onSubmit={() => setBad(bad + 1)}>bad</Button>
+      <Button onSubmit={addGood}>good</Button>
+      <Button onSubmit={addNeutral}>neutral</Button>
+      <Button onSubmit={addBad}>bad</Button>
 
-      <Statistics onGood={good} onNeutral={neutral} onBad={bad} />
+      <Statistics
+        onGood={points.find((point) => point.name === 'good').value}
+        onNeutral={points.find((point) => point.name === 'neutral').value}
+        onBad={points.find((point) => point.name === 'bad').value}
+      />
     </>
   );
 }
