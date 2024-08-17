@@ -2,33 +2,36 @@ import { useEffect, useState } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import RenderPeople from './components/RenderPeople';
-import axios from 'axios';
+import personService from './services/person';
 
 function App() {
-  useEffect(() => {
-    axios.get('http://localhost:3001/person').then((response) => {
-      setPerson(response.data);
-    });
-  }, []);
-
   const [person, setPerson] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filteredPeople, setFilteredPeople] = useState('');
 
+  useEffect(() => {
+    personService.getAll().then((initialPerson) => {
+      setPerson(initialPerson);
+    });
+  }, []);
+
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = {
-      id: person.length + 1,
       name: newName,
       number: newNumber,
+      id: person.length + 1,
     };
+
     {
       (personObject.name && personObject.number) === ''
         ? alert('Please enter a name and number')
         : person.find((p) => p.name === newName)
         ? alert(`${newName} is already added to phonebook`)
-        : setPerson(person.concat(personObject));
+        : personService.create(personObject).then((returnedPerson) => {
+            setPerson(person.concat(returnedPerson));
+          });
     }
 
     setNewName('');
