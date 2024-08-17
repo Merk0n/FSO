@@ -24,8 +24,8 @@ function App() {
       number: newNumber,
     };
     {
-      personObject.name === ''
-        ? alert('Please enter a name')
+      (personObject.name && personObject.number) === ''
+        ? alert('Please enter a name and number')
         : person.find((p) => p.name === newName)
         ? alert(`${newName} is already added to phonebook`)
         : setPerson(person.concat(personObject));
