@@ -21,14 +21,25 @@ function App() {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: person.length + 1,
     };
 
     {
       (personObject.name && personObject.number) === ''
         ? alert('Please enter a name and number')
         : person.find((p) => p.name === newName)
-        ? alert(`${newName} is already added to phonebook`)
+        ? confirm(
+            `${newName} is already added to phonebook. Replace the old number with a new one?`
+          )
+          ? personService
+              .update(person.find((p) => p.name === newName).id, personObject)
+              .then((returnedPerson) => {
+                setPerson(
+                  person.map((p) =>
+                    p.id !== returnedPerson.id ? p : returnedPerson
+                  )
+                );
+              })
+          : console.log('Cancelled')
         : personService.create(personObject).then((returnedPerson) => {
             setPerson(person.concat(returnedPerson));
           });
@@ -50,6 +61,18 @@ function App() {
     person.name.toLowerCase().includes(filteredPeople.toLowerCase())
   );
 
+  const deletePerson = (id) => {
+    personService
+      .remove(id)
+      .then(() => {
+        setPerson(person.filter((person) => person.id !== id));
+      })
+      .catch((error) => {
+        console.log(error.message);
+        alert('The person was already deleted from the server');
+      });
+  };
+
   return (
     <>
       <h2>Phonebook</h2>
@@ -65,7 +88,10 @@ function App() {
       />
 
       <h2>Numbers</h2>
-      <RenderPeople handleFilteredPeople={handleFilteredPeople} />
+      <RenderPeople
+        deletePerson={deletePerson}
+        handleFilteredPeople={handleFilteredPeople}
+      />
     </>
   );
 }
