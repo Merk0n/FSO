@@ -12,6 +12,7 @@ function App() {
   const [newNumber, setNewNumber] = useState('');
   const [filteredPeople, setFilteredPeople] = useState('');
   const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPerson) => {
@@ -79,8 +80,11 @@ function App() {
         setPerson(person.filter((person) => person.id !== id));
       })
       .catch((error) => {
-        console.log(error.message);
-        alert('The person was already deleted from the server');
+        setErrorMessage(
+          `Information of ${
+            person.find((p) => p.id === id).name
+          } has already been removed from the server`
+        );
       });
   };
 
@@ -104,6 +108,7 @@ function App() {
         deletePerson={deletePerson}
         handleFilteredPeople={handleFilteredPeople}
       />
+      <Notification message={errorMessage} />
     </>
   );
 }
