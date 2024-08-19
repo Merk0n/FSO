@@ -3,12 +3,15 @@ import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import RenderPeople from './components/RenderPeople';
 import personService from './services/person';
+import Notification from './components/Notification';
+import './index.css';
 
 function App() {
   const [person, setPerson] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filteredPeople, setFilteredPeople] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPerson) => {
@@ -38,10 +41,18 @@ function App() {
                     p.id !== returnedPerson.id ? p : returnedPerson
                   )
                 );
+                setMessage(`Updated ${newName}`);
+                setTimeout(() => {
+                  setMessage(null);
+                }, 5000);
               })
           : console.log('Cancelled')
         : personService.create(personObject).then((returnedPerson) => {
             setPerson(person.concat(returnedPerson));
+            setMessage(`Added ${newName}`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
           });
     }
 
@@ -86,6 +97,7 @@ function App() {
         newName={newName}
         newNumber={newNumber}
       />
+      <Notification message={message} />
 
       <h2>Numbers</h2>
       <RenderPeople
