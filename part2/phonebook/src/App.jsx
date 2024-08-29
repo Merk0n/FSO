@@ -79,7 +79,7 @@ function App() {
       .then(() => {
         setPerson(person.filter((person) => person.id !== id));
       })
-      .catch((error) => {
+      .catch(() => {
         setErrorMessage(
           `Information of ${
             person.find((p) => p.id === id).name
