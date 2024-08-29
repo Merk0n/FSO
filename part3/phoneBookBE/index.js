@@ -2,6 +2,11 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+app.use(express.static('dist'));
+
+const cors = require('cors');
+
+app.use(cors());
 
 let persons = [
   {
@@ -45,11 +50,11 @@ app.get('/info', (request, response) => {
   );
 });
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/person', (request, response) => {
   response.json(persons);
 });
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/person/:id', (request, response) => {
   const id = request.params.id;
   const person = persons.find((person) => person.id === id);
 
@@ -60,14 +65,14 @@ app.get('/api/persons/:id', (request, response) => {
   }
 });
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/person/:id', (request, response) => {
   const id = request.params.id;
   persons = persons.filter((person) => person.id !== id);
 
   response.status(204).end();
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/person', (request, response) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
@@ -93,7 +98,7 @@ app.post('/api/persons', (request, response) => {
   response.json(person);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
